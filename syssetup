@@ -57,8 +57,7 @@ sudo systemctl start ntfy
 read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
 
-# !!! 5 letters are missing !!!
-$topic="5smmqt822t7gdkan45h1r6dhfnuk5n-ubuntuserver"
+$topic="5smmqt822t7gdkan45h1r6dhfnuk5nfkd03-ubuntuserver"
 
 $bin="/home/noahl/.bin"
 mkdir -p $bin
