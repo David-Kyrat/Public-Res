@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# TODO: CONNECT TO WIFI  (manually)
+
+
+# install git and clone this setup script (manually))
+
+# sudo apt update && sudo apt upgrade -y
+# sudo apt install git wget
+# wget ...
+
+
+# -------- SETUP START --------
+
+sudo apt install -y build-essential
+
+# network tools
+sudo apt install -y \
+net-tools \
+iproute2 \
+curl \
+dnsutils \
+wireless-tools
+
+# convenience tools
+
+sudo apt install -y \
+		jq \
+		lsd \
+		bat \
+		ripgrep \
+		fd
+
+
+
+# ....
+#
+#
+#
+
+
+# Install Ntfy
+
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://archive.heckel.io/apt/pubkey.txt | sudo gpg --dearmor -o /etc/apt/keyrings/archive.heckel.io.gpg
+sudo apt install apt-transport-https
+sudo sh -c "echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/archive.heckel.io.gpg] https://archive.heckel.io/apt debian main' \
+    > /etc/apt/sources.list.d/archive.heckel.io.list"  
+sudo apt update
+sudo apt install -y ntfy
+sudo systemctl enable ntfy
+sudo systemctl start ntfy
+
+# ---
+
+
+# ----- Now Setting Up remote copy paste ----&-
+
+read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+
+
+# NB:  5chars are missing !!
+$topic="5smmqt822t7gdkan45h1r6dhfnuk5n-ubuntuserver"
+
+$bin="/home/noahl/.bin"
+mkdir -p $bin
+
+echo '#!/bin/bash' > "$bin/ntfy_listen"
+echo "ntfy sub $topic 'echo \"\$m\" > ~/log.txt'" >> "$bin/ntfy_listen"
+chmod u+x "$bin/ntfy_listen"
+export PATH="$bin:$PATH"
+
+# start ntfy "daemon" (nt rlly one but osef) to forward  ntfy msgs to log file (to remote copy/paste)
+ntfy sub $topic 'echo "$m" > ~/log.txt' &
+
+
+
+
+
