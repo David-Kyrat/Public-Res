@@ -31,8 +31,6 @@ sudo apt install -y \
 		ripgrep \
 		fd
 
-
-
 # ....
 #
 #
@@ -59,7 +57,7 @@ sudo systemctl start ntfy
 read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
 
-# NB:  5chars are missing !!
+# !!! 5 letters are missing !!!
 $topic="5smmqt822t7gdkan45h1r6dhfnuk5n-ubuntuserver"
 
 $bin="/home/noahl/.bin"
@@ -74,6 +72,33 @@ export PATH="$bin:$PATH"
 ntfy sub $topic 'echo "$m" > ~/log.txt' &
 
 
+# ----- Securely Getting back SSH identity key --------
+
+mkdir -p ~/.ssh
+echo "$(curl -sSl https://github.com/david-kyrat.keys | rg L6mR) noahl@noahmunz-leg5pro" > ~/.ssh/id_ed25519_leg5pro-identity.pub
+
+cat ~/.ssh/id_ed25519_leg5pro-identity.pub >> ~/.ssh/authorized_keys
 
 
+# ----- Download .customrc, .gitconfig and other private config files ------
 
+read -p "Or you authenticated to github ? / Want to continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+
+
+export config="$HOME/.config"
+export config2="$HOME/configit"
+
+
+git clone -b serv git@github.com:David-Kyrat/DotFiles.git $config2
+
+cp $config2/.bashrc $config
+cp $config2/.customrc $config
+cp $config2/.gitconfig $config
+cp $config2/starship.toml $config
+cp $config2/.git $config -rf
+
+cd
+
+ln -s $config2/.bashrc
+ln -s $config2/.customrc
+ln -s $config2/.gitconfig
