@@ -29,7 +29,8 @@ sudo apt install -y \
 		lsd \
 		bat \
 		ripgrep \
-		fd
+		fd-find
+snap install nvim -y
 
 # ....
 #
@@ -57,7 +58,7 @@ sudo systemctl start ntfy
 read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
 #!! 5 char missing !!
-topic="5smmqt822t7gdkan45h1r6dhfnuk5n-ubuntuserver"
+topic="5smmqt822t7gdkan45h1r6dhfnuk5nfkd03-ubuntuserver"
 
 bin="/home/noahl/.bin"
 mkdir -p $bin
@@ -86,7 +87,7 @@ read -p "Press any key to continue:" confirm
 
 gpg -d $keyname.gpg > ~/.ssh/$keyname
 ssh-keygen -y -f ~/.ssh/$keyname > ~/.ssh/$keyname.pub
-chmod 600 ~/.ssh/$keyname
+sudo chmod 600 ~/.ssh/$keyname
 
 
 # ! no need to download pub key since it can be fenerated from pvt key !
