@@ -7,7 +7,7 @@
 
 # sudo apt update && sudo apt upgrade -y
 # sudo apt install git wget
-# wget ...
+# wget https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/syssetup
 
 
 # -------- SETUP START --------
