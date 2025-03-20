@@ -52,12 +52,11 @@ sudo systemctl start ntfy
 # ---
 
 
-# ----- Now Setting Up remote copy paste ----&-
+# ----- Now Setting Up remote copy paste ----&
 
 read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
-
-# !!! 5 letters are missing !!!
+#!! 5 char missing !!
 topic="5smmqt822t7gdkan45h1r6dhfnuk5n-ubuntuserver"
 
 bin="/home/noahl/.bin"
@@ -72,15 +71,54 @@ export PATH="$bin:$PATH"
 ntfy sub $topic 'echo "$m" > ~/log.txt' &
 
 
+
 # ----- Securely Getting back SSH identity key --------
 
-mkdir -p ~/.ssh
-echo "$(curl -sSl https://github.com/david-kyrat.keys | rg L6mR) noahl@noahmunz-leg5pro" > ~/.ssh/id_ed25519_leg5pro-identity.pub
 
-cat ~/.ssh/id_ed25519_leg5pro-identity.pub >> ~/.ssh/authorized_keys
+mkdir -p ~/.ssh
+
+keyname="id_ed25519_leg5pro-identity"
+
+curl -sSLO https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/$keyname.gpg
+
+echo -e "\n\n >> Downloaded encrypted private key, be ready to enter passphrase."
+read -p "Press any key to continue:" confirm
+
+gpg -d $keyname.gpg > ~/.ssh/$keyname
+ssh-keygen -y -f ~/.ssh/$keyname > ~/.ssh/$keyname.pub
+chmod 600 ~/.ssh/$keyname
+
+
+# ! no need to download pub key since it can be fenerated from pvt key !
+
+# --------
+
+#echo "$(curl -sSl https://github.com/david-kyrat.keys | rg L6mR) noahl@noahmunz-leg5pro" > ~/.ssh/id_ed25519_leg5pro-identity.pub
+
+# key=$(curl -sSl "https://github.com/david-kyrat.keys" | rg L6mR | awk '{print $2}'  | rg L6mR)
+#
+#
+# keyname="id_ed25519_leg5pro-identity"
+#
+#
+# if [ ! -z "$key" ]; then
+# 		curl -sSl "https://github.com/david-kyrat.keys" | rg "$key" > "~/.ssh/$keyname.pub"
+# 		cat ~/.ssh/$keyname.pub >> ~/.ssh/authorized_keys
+# fi
+#
+# curl -sSLO https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/$keyname.gpg
+#
+# echo -e "\n\n >> Downloaded encrypted private key, be ready to enter passphrase."
+# read -p "Press any key to continue:" confirm
+#
+# # small name mismatch indeed
+# gpg -d $keyname.gpg > ~/.ssh/$keyname
+# chmod 400 ~/.ssh/$keyname
+
 
 
 # ----- Download .customrc, .gitconfig and other private config files ------
+
 
 read -p "Or you authenticated to github ? / Want to continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
