@@ -32,11 +32,6 @@ sudo apt install -y \
 		fd-find
 snap install nvim -y
 
-# ....
-#
-#
-#
-
 
 # Install Ntfy
 
@@ -50,14 +45,12 @@ sudo apt install -y ntfy
 sudo systemctl enable ntfy
 sudo systemctl start ntfy
 
-# ---
-
 
 # ----- Now Setting Up remote copy paste ----&
 
 read -p "Press Y/Yes when you've installed ntfy. (Y/N) N: quit: " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
-#!! 5 char missing !!
+# !!! 5 char missing !!! 
 topic="5smmqt822t7gdkan45h1r6dhfnuk5nfkd03-ubuntuserver"
 
 bin="/home/noahl/.bin"
@@ -77,6 +70,7 @@ ntfy sub $topic 'echo "$m" > ~/log.txt' &
 
 
 mkdir -p ~/.ssh
+sudo chmod 700 ~/.ssh
 
 keyname="id_ed25519_leg5pro-identity"
 
@@ -85,10 +79,21 @@ curl -sSLO https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/m
 echo -e "\n\n >> Downloaded encrypted private key, be ready to enter passphrase."
 read -p "Press any key to continue:" confirm
 
-gpg -d $keyname.gpg > ~/.ssh/$keyname
-ssh-keygen -y -f ~/.ssh/$keyname > ~/.ssh/$keyname.pub
-sudo chmod 600 ~/.ssh/$keyname
+gpg -d $keyname.gpg > $keyname
+sudo chmod 600 $keyname
+ssh-keygen -y -f ~/.ssh/$keyname > $keyname.pub
+sudo chmod 600 $keyname.pub
 
+mv $keyname  ~/.ssh/$keyname
+mv $keyname.pub  ~/.ssh/$keyname.pub
+
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/$keyname
+
+echo -e "\nTesting Validity of decrypted ssh keys for GitHub:"
+
+ssh -T git@github.com
 
 # ! no need to download pub key since it can be fenerated from pvt key !
 
