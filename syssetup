@@ -30,6 +30,7 @@ sudo apt install -y \
 		bat \
 		ripgrep \
 		fd-find
+sudo apt install -y keychain
 snap install nvim -y
 
 
@@ -81,68 +82,49 @@ read -p "Press any key to continue:" confirm
 
 gpg -d $keyname.gpg > $keyname
 sudo chmod 600 $keyname
-ssh-keygen -y -f ~/.ssh/$keyname > $keyname.pub
+ssh-keygen -y -f $keyname > $keyname.pub
 sudo chmod 600 $keyname.pub
 
 mv $keyname  ~/.ssh/$keyname
 mv $keyname.pub  ~/.ssh/$keyname.pub
+ln -s ~/.ssh/$keyname ~/.ssh/id_ed25519
+ln -s ~/.ssh/$keyname.pub ~/.ssh/id_ed25519.pub
 
+#eval "$(ssh-agent -s)"
+#ssh-add ~/.ssh/$keyname
+eval $(keychain --eval $HOME/.ssh/$keyname)
 
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/$keyname
 
 echo -e "\nTesting Validity of decrypted ssh keys for GitHub:"
 
 ssh -T git@github.com
 
-# ! no need to download pub key since it can be fenerated from pvt key !
-
-# --------
-
-#echo "$(curl -sSl https://github.com/david-kyrat.keys | rg L6mR) noahl@noahmunz-leg5pro" > ~/.ssh/id_ed25519_leg5pro-identity.pub
-
-# key=$(curl -sSl "https://github.com/david-kyrat.keys" | rg L6mR | awk '{print $2}'  | rg L6mR)
-#
-#
-# keyname="id_ed25519_leg5pro-identity"
-#
-#
-# if [ ! -z "$key" ]; then
-# 		curl -sSl "https://github.com/david-kyrat.keys" | rg "$key" > "~/.ssh/$keyname.pub"
-# 		cat ~/.ssh/$keyname.pub >> ~/.ssh/authorized_keys
-# fi
-#
-# curl -sSLO https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/$keyname.gpg
-#
-# echo -e "\n\n >> Downloaded encrypted private key, be ready to enter passphrase."
-# read -p "Press any key to continue:" confirm
-#
-# # small name mismatch indeed
-# gpg -d $keyname.gpg > ~/.ssh/$keyname
-# chmod 400 ~/.ssh/$keyname
-
-
 
 # ----- Download .customrc, .gitconfig and other private config files ------
-
 
 read -p "Or you authenticated to github ? / Want to continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
 
 
 export config="$HOME/.config"
-export config2="$HOME/configit"
+#export config2="$HOME/configit"
+#rm -rf $config2 &> ./syssetuplog.git
 
+mv $config $config.bak &> ./syssetuplog.git
 
-git clone -b serv git@github.com:David-Kyrat/DotFiles.git $config2
-
-cp $config2/.bashrc $config
-cp $config2/.customrc $config
-cp $config2/.gitconfig $config
-cp $config2/starship.toml $config
-cp $config2/.git $config -rf
+git clone -b serv --depth 1 git@github.com:David-Kyrat/DotFiles.git $config
 
 cd
 
-ln -s $config2/.bashrc
-ln -s $config2/.customrc
-ln -s $config2/.gitconfig
+ln -f $config/.customrc
+ln -f $config/.gitconfig
+cp $config/gacp $bin
+
+
+echo -e '#=========================\n' >> .bashrc
+echo 'export XDG_CONFIG_HOME=$HOME/.config' >> .bashrc
+echo 'export config=$XDG_CONFIG_HOME' >> .bashrc
+echo 'export customrc=$HOME/.customrc' >> .bashrc
+echo 'export bashrc=$HOME/.bashrc' >> .bashrc
+echo 'source $customrc' >> .bashrc
+
+
