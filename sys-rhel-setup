@@ -7,7 +7,7 @@
 
 # sudo apt update && sudo apt upgrade -y
 # sudo dnf install git wget
-# wget https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/syssetup
+# wget https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/sys-rhel-setup
 
 
 
