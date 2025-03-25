@@ -6,30 +6,30 @@
 # install git and clone this setup script (manually))
 
 # sudo apt update && sudo apt upgrade -y
-# sudo apt install git wget
+# sudo dnf install git wget
 # wget https://raw.githubusercontent.com/David-Kyrat/Public-Res/refs/heads/master/syssetup
 
 
 
 # -------- SETUP START --------
 
-sudo apt install -y build-essential
-sudo apt install -y keychain
+#sudo dnf install -y build-essential
+sudo dnf install -y keychain
 
 # network tools
-sudo apt install -y \
+sudo dnf install -y \
 net-tools \
 iproute2 \
 curl \
 dnsutils \
 wireless-tools
 
-curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
-sudo apt-get install speedtest
+curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | sudo bash
+sudo dnf install speedtest
 
 # convenience tools
 
-sudo apt install -y \
+sudo dnf --setopt=skip_missing_names_on_install=True install -y \
 		jq \
 		lsd \
 		bat \
@@ -38,24 +38,21 @@ sudo apt install -y \
 
 curl -sS https://starship.rs/install.sh | sh
 
-snap install nvim -y
+#snap install nvim -y
+
+curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.appimage
+chmod u+x nvim-linux-x86_64.appimage
+
+sudo mkdir -p /usr/local/bin
+sudo mv nvim-linux-x86_64.appimage /usr/local/bin/nvim
 
 
-# Install Ntfy Ubuntu 
+# Install Ntfy RHEL
 
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://archive.heckel.io/apt/pubkey.txt | sudo gpg --dearmor -o /etc/apt/keyrings/archive.heckel.io.gpg
-sudo apt install apt-transport-https
-sudo sh -c "echo 'deb [arch=amd64 signed-by=/etc/apt/keyrings/archive.heckel.io.gpg] https://archive.heckel.io/apt debian main' \
-   > /etc/apt/sources.list.d/archive.heckel.io.list"  
-sudo apt update
-sudo apt install -y ntfy
-sudo systemctl enable ntfy
+sudo rpm -ivh https://github.com/binwiederhier/ntfy/releases/download/v2.11.0/ntfy_2.11.0_linux_amd64.rpm
+
+sudo systemctl enable ntfy 
 sudo systemctl start ntfy
-
-# Install ntfy RHEL
-
-
 		
 
 
