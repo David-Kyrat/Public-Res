@@ -17,7 +17,7 @@
 sudo dnf install -y keychain
 
 # network tools
-sudo dnf install -y \
+sudo dnf --setopt=skip_missing_names_on_install=True install -y \
 net-tools \
 iproute2 \
 curl \
@@ -25,7 +25,7 @@ dnsutils \
 wireless-tools
 
 curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.rpm.sh | sudo bash
-sudo dnf install speedtest
+sudo dnf install -y speedtest
 
 # convenience tools
 
